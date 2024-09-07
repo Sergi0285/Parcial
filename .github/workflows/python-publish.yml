@@ -1,13 +1,11 @@
-name: despliegue
+name: Deploy
 
 on:
   push:
-    branches:
-      - Frontend
-      - Backend
+    branches: [ "master" ]
     
 jobs:
-  build:
+  Deploy:
   
     name: Deploy to EC2
     runs-on: ubuntu-latest
