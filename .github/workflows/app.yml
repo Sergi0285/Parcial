@@ -3,10 +3,9 @@ name: Deploy
 on:
   push:
     branches: [Frontend, Backend]
-      
+    
 jobs:
   deploy:
-  
     name: Deploy to EC2
     runs-on: ubuntu-latest
     
@@ -44,13 +43,13 @@ jobs:
               # Construir la aplicación
               npm run build &&
 
-              # elimina el contenido actual de /var/www/html
+              # Eliminar el contenido actual de /var/www/html
               sudo rm -rf /var/www/html/* &&
-              
-              # copia los archivos de la carpeta build/ de tu aplicación React al directorio de Apache
-              sudo cp -r home/ubuntu/Parcial/Frontend/paginaparcial/build/* /var/www/html/ &&
 
-              #Asegúrate de que los permisos sean correctos
+              # Copiar los archivos de la carpeta build/ de tu aplicación React al directorio de Apache
+              sudo cp -r build/* /var/www/html/ &&
+
+              # Asegúrate de que los permisos sean correctos
               sudo chown -R www-data:www-data /var/www/html
           '
 
@@ -63,7 +62,6 @@ jobs:
           EC2_USER: ${{ secrets.USER_NAME }}
           APP_DIR: /home/ubuntu/Parcial/Backend
           APP_FILE: Servidor.py
-          ENVIRONMENT: production
         run: |
           echo "$EC2_PRIVATE_KEY" > ec2_key && chmod 600 ec2_key
           ssh -o StrictHostKeyChecking=no -i ec2_key ${EC2_USER}@${SERVER_IP} '
@@ -85,8 +83,8 @@ jobs:
               sudo fuser -k 5000/tcp &&
 
               # Ejecutar la aplicación Flask
-              nohup python Servidor.py > flask_server.log 2>&1 &
+              nohup python ${APP_FILE} > flask_server.log 2>&1 &
 
-              #Comprobar si la consola quedo libre
+              # Comprobar si la consola quedó libre
               tail -n 10 flask_server.log
           '
