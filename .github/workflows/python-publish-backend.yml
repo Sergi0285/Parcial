@@ -1,12 +1,13 @@
-name: app-backend
+name: Deploy
 
 on:
   push:
     branches: [ "Backend" ]
     
 jobs:
-  deploy:
-    name: Deploy to EC2
+  Deploy:
+  
+    name: Deploy to EC2 Backend
     runs-on: ubuntu-latest
     
     steps:
