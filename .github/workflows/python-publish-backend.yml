@@ -34,6 +34,7 @@ jobs:
               cd ${APP_DIR} &&
 
               # Actualizar el código desde la rama backend 
+              ls -a &&
               git status &&
               git fetch --all &&
               git switch Backend &&
