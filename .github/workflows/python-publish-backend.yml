@@ -52,9 +52,9 @@ jobs:
               # Detener cualquier proceso que esté usando el puerto 5000
               ls &&
               sudo fuser -k 5000/tcp &&
-              ls -a &&
+              ls &&
 
               # Ejecutar la aplicación Flask
-              nohup python ${APP_FILE} &
+              nohup python ${APP_FILE} & disown &&
               pwd
           '
