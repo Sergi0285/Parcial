@@ -2,7 +2,7 @@ name: despliegue
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "master" ]
     
 jobs:
   Deploy:
