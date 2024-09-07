@@ -33,6 +33,7 @@ jobs:
               # Acceder al directorio del backend
               cd /home/ubuntu/Parcial &&
               pwd &&
+              source /home/ubuntu/venv/bin/activate &&
 
               # Actualizar el código desde la rama backend 
               ls -a &&
@@ -41,9 +42,10 @@ jobs:
               git switch Backend &&
               git reset --hard origin/Backend &&
               git pull origin Backend &&
+              git status &&
 
               # Activar el entorno virtual
-              source /home/ubuntu/venv/bin/activate &&
+              
 
               cd /home/ubuntu/Parcial/Backend &&
 
