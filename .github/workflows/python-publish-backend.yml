@@ -33,7 +33,6 @@ jobs:
               # Acceder al directorio del backend
               cd /home/ubuntu/Parcial &&
               pwd &&
-              source /home/ubuntu/venv/bin/activate &&
 
               # Actualizar el código desde la rama backend 
               ls -a &&
@@ -45,13 +44,17 @@ jobs:
               git status &&
 
               # Activar el entorno virtual
-              
+
+              source /home/ubuntu/venv/bin/activate &&
 
               cd /home/ubuntu/Parcial/Backend &&
 
               # Detener cualquier proceso que esté usando el puerto 5000
+              ls &&
               sudo fuser -k 5000/tcp &&
+              ls -a &&
 
               # Ejecutar la aplicación Flask
-              nohup python ${APP_FILE}
+              nohup python ${APP_FILE} &
+              pwd
           '
