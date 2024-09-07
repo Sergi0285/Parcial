@@ -33,8 +33,10 @@ jobs:
               # Acceder al directorio del backend
               cd ${APP_DIR} &&
 
-              # Actualizar el código desde la rama backend
+              # Actualizar el código desde la rama backend 
+              git status &&
               git fetch --all &&
+              git switch Backend &&
               git reset --hard origin/Backend &&
               git pull origin Backend &&
 
