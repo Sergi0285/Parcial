@@ -38,8 +38,8 @@ jobs:
 
               # Actualizar el código desde la rama backend
               git fetch --all &&
-              git reset --hard origin/backend &&
-              git pull origin backend &&
+              git reset --hard origin/Backend &&
+              git pull origin Backend &&
 
               # Instalar dependencias necesarias
               pip install -r requirements.txt &&
