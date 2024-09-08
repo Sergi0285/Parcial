@@ -56,7 +56,9 @@ jobs:
               # Ejecutar la aplicación Flask en segundo plano
               nohup python Servidor.py > /dev/null 2>&1 &
 
+              # Verificar que el proceso está ejecutándose en segundo plano
               ls -a &&
               pwd &&
-              cat Servidor.py
+              ps aux | grep python &&
+              echo "Servidor.py debería estar corriendo en segundo plano."
           '
