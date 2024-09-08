@@ -32,33 +32,23 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ec2_key ${EC2_USER}@${SERVER_IP} '
               # Acceder al directorio del backend
               cd /home/ubuntu/Parcial &&
-              pwd &&
 
               # Actualizar el código desde la rama backend 
-              ls -a &&
-              git status &&
               git fetch --all &&
               git switch Backend &&
               git reset --hard origin/Backend &&
               git pull origin Backend &&
-              git status &&
 
               # Activar el entorno virtual
               source /home/ubuntu/venv/bin/activate &&
-              pwd &&
               cd /home/ubuntu/Parcial/Backend &&
-              ls -a &&
 
               # Detener cualquier proceso que esté usando el puerto 5000
               sudo fuser -k 5000/tcp &&
-              pwd &&
 
               # Ejecutar la aplicación Flask en segundo plano
               nohup python Servidor.py > /dev/null 2>&1 &
 
               # Verificar que el proceso está ejecutándose en segundo plano
-              ls -a &&
-              pwd &&
-              ps aux | grep python &&
               echo "Servidor.py debería estar corriendo en segundo plano."
           '
