@@ -70,12 +70,17 @@ def delete_usuario(id):
         return jsonify({'message': 'Usuario borrado exitosamente'}), 200
     return jsonify({'message': 'Usuario no encontrado'}), 404
 
-def create_test_app():
-    app = Flask(__name__)
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()  # Asegúrate de que las tablas se crean en la base de datos en memoria
-    return app
+@app.route('/usuarios', methods=['POST'])
+def create_usuario():
+    data = request.get_json()
+    print(f"Received POST request with data: {data}")
+    nuevo_usuario = Usuario(
+        nombre=data.get('nombre'),
+        apellido=data.get('apellido'),
+        fechaNacimiento=data.get('fechaNacimiento'),
+        password=data.get('password')
+    )
+    db.session.add(nuevo_usuario)
+    db.session.commit()
+    return jsonify({'message': 'Usuario creado exitosamente'}), 201
+
