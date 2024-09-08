@@ -26,12 +26,12 @@ jobs:
           cd Backend &&
           pip install -r requirements.txt
           
-      # Run unit tests
+      # Set PYTHONPATH and run unit tests
       - name: Run Unit Tests
         run: |
-          export PYTHONPATH=./Backend &&
-          cd Backend/tests &&
-          pytest test_usuario.py --disable-warnings
+          cd Backend &&
+          export PYTHONPATH=$(pwd) &&
+          pytest tests/test_usuario.py --disable-warnings
           
       # Despliegue del Backend si las pruebas unitarias pasan
       - name: Deploy Backend to EC2 Instance
