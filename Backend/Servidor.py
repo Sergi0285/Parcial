@@ -5,7 +5,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Configuración de la conexión a MySQL
+# Configuración de la conexión a MySQL (producción)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@172.31.80.194:3306/trabajo'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -21,7 +21,7 @@ class Usuario(db.Model):
     fechaNacimiento = db.Column(db.Date, nullable=True)
     password = db.Column(db.String(100), nullable=True)
 
-# Endpoint para crear un nuevo usuario
+# Endpoints
 @app.route('/usuarios', methods=['POST'])
 def create_usuario():
     data = request.get_json()
@@ -35,14 +35,12 @@ def create_usuario():
     db.session.commit()
     return jsonify({'message': 'Usuario creado exitosamente'}), 201
 
-# Endpoint para obtener todos los usuarios
 @app.route('/usuarios', methods=['GET'])
 def get_usuarios():
     usuarios = Usuario.query.all()
     usuarios_list = [{'id': u.id, 'nombre': u.nombre, 'apellido': u.apellido, 'fechaNacimiento': u.fechaNacimiento, 'password': u.password} for u in usuarios]
     return jsonify(usuarios_list), 200
 
-# Endpoint para obtener un usuario por ID
 @app.route('/usuarios/<int:id>', methods=['GET'])
 def get_usuario(id):
     usuario = Usuario.query.get(id)
@@ -50,7 +48,6 @@ def get_usuario(id):
         return jsonify({'id': usuario.id, 'nombre': usuario.nombre, 'apellido': usuario.apellido, 'fechaNacimiento': usuario.fechaNacimiento, 'password': usuario.password}), 200
     return jsonify({'message': 'Usuario no encontrado'}), 404
 
-# Endpoint para actualizar un usuario
 @app.route('/usuarios/<int:id>', methods=['PUT'])
 def update_usuario(id):
     data = request.get_json()
@@ -64,7 +61,6 @@ def update_usuario(id):
         return jsonify({'message': 'Usuario actualizado exitosamente'}), 200
     return jsonify({'message': 'Usuario no encontrado'}), 404
 
-# Endpoint para borrar un usuario
 @app.route('/usuarios/<int:id>', methods=['DELETE'])
 def delete_usuario(id):
     usuario = Usuario.query.get(id)
@@ -74,6 +70,12 @@ def delete_usuario(id):
         return jsonify({'message': 'Usuario borrado exitosamente'}), 200
     return jsonify({'message': 'Usuario no encontrado'}), 404
 
-#Comentario de prueba para ACTIONS v2.5
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+def create_test_app():
+    app = Flask(__name__)
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+    return app
