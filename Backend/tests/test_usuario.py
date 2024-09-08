@@ -5,10 +5,12 @@ from Servidor import create_test_app, db, Usuario
 def client():
     app = create_test_app()
     with app.test_client() as client:
+        with app.app_context():
+            db.create_all()  # Crea las tablas antes de cada prueba
         yield client
-    # Clean up after each test
-    with app.app_context():
-        db.drop_all()
+        with app.app_context():
+            db.drop_all()  # Limpia la base de datos después de cada prueba
+
 
 def test_create_usuario(client):
     response = client.post('/usuarios', json={
