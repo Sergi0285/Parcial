@@ -54,7 +54,7 @@ jobs:
               pwd &&
 
               # Ejecutar la aplicación Flask en segundo plano
-              nohup python Servidor.py > nohup.out 2>&1 &&
+              nohup python Servidor.py & &&
 
               ls -a
           '
