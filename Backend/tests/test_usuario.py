@@ -6,6 +6,9 @@ def client():
     app = create_test_app()
     with app.test_client() as client:
         yield client
+    # Clean up after each test
+    with app.app_context():
+        db.drop_all()
 
 def test_create_usuario(client):
     response = client.post('/usuarios', json={
@@ -35,7 +38,7 @@ def test_get_usuario(client):
         'fechaNacimiento': '1990-01-01',
         'password': 'secret'
     })
-    user_id = res.json['id']
+    user_id = res.json.get('id')  # Use get to avoid KeyError
     response = client.get(f'/usuarios/{user_id}')
     assert response.status_code == 200
     assert response.json['nombre'] == 'Juan'
@@ -47,7 +50,7 @@ def test_update_usuario(client):
         'fechaNacimiento': '1990-01-01',
         'password': 'secret'
     })
-    user_id = res.json['id']
+    user_id = res.json.get('id')  # Use get to avoid KeyError
     response = client.put(f'/usuarios/{user_id}', json={
         'nombre': 'Juan Updated'
     })
@@ -61,7 +64,7 @@ def test_delete_usuario(client):
         'fechaNacimiento': '1990-01-01',
         'password': 'secret'
     })
-    user_id = res.json['id']
+    user_id = res.json.get('id')  # Use get to avoid KeyError
     response = client.delete(f'/usuarios/{user_id}')
     assert response.status_code == 200
     assert response.json['message'] == 'Usuario borrado exitosamente'
