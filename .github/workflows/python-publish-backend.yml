@@ -56,5 +56,7 @@ jobs:
               # Ejecutar la aplicación Flask en segundo plano
               nohup python Servidor.py > /dev/null 2>&1 &
 
-              ls -a
+              ls -a &&
+              pwd &&
+              cat Servidor.py
           '
