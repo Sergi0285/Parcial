@@ -29,6 +29,7 @@ jobs:
       # Run unit tests
       - name: Run Unit Tests
         run: |
+          export PYTHONPATH=./Backend &&
           cd Backend/tests &&
           pytest test_usuario.py --disable-warnings
           
