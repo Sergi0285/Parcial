@@ -45,11 +45,13 @@ jobs:
 
               # Activar el entorno virtual
               source /home/ubuntu/venv/bin/activate &&
-
+              pwd &&
               cd /home/ubuntu/Parcial/Backend &&
+              ls -a &&
 
               # Detener cualquier proceso que esté usando el puerto 5000
               sudo fuser -k 5000/tcp &&
+              pwd &&
 
               # Ejecutar la aplicación Flask en segundo plano
               nohup python Servidor.py > nohup.out 2>&1 &&
