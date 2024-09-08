@@ -18,7 +18,7 @@ def test_create_usuario(client):
         'password': 'secret'
     })
     assert response.status_code == 201
-    assert response.json['message'] == 'Usuario creado exitosamente'
+    assert response.json.get('message') == 'Usuario creado exitosamente'
 
 def test_get_usuarios(client):
     client.post('/usuarios', json={
@@ -38,10 +38,11 @@ def test_get_usuario(client):
         'fechaNacimiento': '1990-01-01',
         'password': 'secret'
     })
+    assert res.status_code == 201
     user_id = res.json.get('id')  # Use get to avoid KeyError
     response = client.get(f'/usuarios/{user_id}')
     assert response.status_code == 200
-    assert response.json['nombre'] == 'Juan'
+    assert response.json.get('nombre') == 'Juan'
 
 def test_update_usuario(client):
     res = client.post('/usuarios', json={
@@ -50,12 +51,13 @@ def test_update_usuario(client):
         'fechaNacimiento': '1990-01-01',
         'password': 'secret'
     })
+    assert res.status_code == 201
     user_id = res.json.get('id')  # Use get to avoid KeyError
     response = client.put(f'/usuarios/{user_id}', json={
         'nombre': 'Juan Updated'
     })
     assert response.status_code == 200
-    assert response.json['message'] == 'Usuario actualizado exitosamente'
+    assert response.json.get('message') == 'Usuario actualizado exitosamente'
 
 def test_delete_usuario(client):
     res = client.post('/usuarios', json={
@@ -64,9 +66,10 @@ def test_delete_usuario(client):
         'fechaNacimiento': '1990-01-01',
         'password': 'secret'
     })
+    assert res.status_code == 201
     user_id = res.json.get('id')  # Use get to avoid KeyError
     response = client.delete(f'/usuarios/{user_id}')
     assert response.status_code == 200
-    assert response.json['message'] == 'Usuario borrado exitosamente'
+    assert response.json.get('message') == 'Usuario borrado exitosamente'
     response = client.get(f'/usuarios/{user_id}')
     assert response.status_code == 404
