@@ -5,22 +5,36 @@ on:
     branches: [ "Backend" ]
     
 jobs:
-  Deploy:
-  
-    name: Deploy to EC2 Backend
+  TestAndDeploy:
+    name: Test and Deploy to EC2 Backend
     runs-on: ubuntu-latest
     
     steps:
+      # Checkout the code from the Backend branch
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Setup Python environment
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd /home/ubuntu/Parcial/Backend &&
+          pip install -r requirements.txt
           
-      # Despliegue del Backend
+      # Run unit tests
+      - name: Run Unit Tests
+        run: |
+          cd /home/ubuntu/Parcial/Backend &&
+          pytest --disable-warnings
+          
+      # Despliegue del Backend si las pruebas unitarias pasan
       - name: Deploy Backend to EC2 Instance
+        if: success()  # Solo ejecutar si las pruebas pasan
         env:
           EC2_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SERVER_IP: ${{ secrets.SSH_HOST_BACK }}
@@ -30,27 +44,14 @@ jobs:
         run: |
           echo "$EC2_PRIVATE_KEY" > ec2_key && chmod 600 ec2_key
           ssh -o StrictHostKeyChecking=no -i ec2_key ${EC2_USER}@${SERVER_IP} '
-              # Acceder al directorio del backend
               cd /home/ubuntu/Parcial &&
-
-              # Actualizar el código desde la rama backend 
               git fetch --all &&
               git switch Backend &&
               git reset --hard origin/Backend &&
               git pull origin Backend &&
-
-              # Activar el entorno virtual
               source /home/ubuntu/venv/bin/activate &&
-              cd /home/ubuntu/Parcial/Backend &&
-
               pip install -r requirements.txt &&
-
-              # Detener cualquier proceso que esté usando el puerto 5000
               sudo fuser -k 5000/tcp &&
-
-              # Ejecutar la aplicación Flask en segundo plano
               nohup python Servidor.py > /dev/null 2>&1 &
-
-              # Verificar que el proceso está ejecutándose en segundo plano
               echo "Servidor.py debería estar corriendo en segundo plano."
           '
