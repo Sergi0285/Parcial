@@ -1,5 +1,5 @@
 import pytest
-from app import app, db, Usuario
+from Servidor import app, db, Usuario
 from flask import json
 
 @pytest.fixture
