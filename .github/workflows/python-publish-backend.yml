@@ -23,11 +23,13 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
+          cd /home/ubuntu/Parcial/Backend &&
           pip install -r requirements.txt
           
       # Run unit tests
       - name: Run Unit Tests
         run: |
+          cd /home/ubuntu/Parcial/Backend &&
           pytest --disable-warnings
           
       # Despliegue del Backend si las pruebas unitarias pasan
