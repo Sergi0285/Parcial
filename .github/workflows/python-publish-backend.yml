@@ -43,6 +43,8 @@ jobs:
               source /home/ubuntu/venv/bin/activate &&
               cd /home/ubuntu/Parcial/Backend &&
 
+              pip install -r requirements.txt &&
+
               # Detener cualquier proceso que esté usando el puerto 5000
               sudo fuser -k 5000/tcp &&
 
