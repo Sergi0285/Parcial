@@ -29,8 +29,8 @@ jobs:
       # Run unit tests
       - name: Run Unit Tests
         run: |
-          cd Backend &&
-          pytest Backend/tests/test_usuario.py --disable-warnings
+          cd Backend/tests &&
+          pytest test_usuario.py --disable-warnings
           
       # Despliegue del Backend si las pruebas unitarias pasan
       - name: Deploy Backend to EC2 Instance
