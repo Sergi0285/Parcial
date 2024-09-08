@@ -74,6 +74,6 @@ def delete_usuario(id):
         return jsonify({'message': 'Usuario borrado exitosamente'}), 200
     return jsonify({'message': 'Usuario no encontrado'}), 404
 
-#Comentario de prueba para ACTIONS v2.4
+#Comentario de prueba para ACTIONS v2.5
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
