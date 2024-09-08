@@ -52,7 +52,7 @@ jobs:
               sudo fuser -k 5000/tcp &&
 
               # Ejecutar la aplicación Flask en segundo plano
-              nohup python ${APP_FILE} > nohup.out 2>&1 &&
+              nohup python Servidor.py > nohup.out 2>&1 &&
 
               ls -a
           '
