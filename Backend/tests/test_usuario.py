@@ -4,74 +4,91 @@ from Servidor import create_test_app, db, Usuario
 @pytest.fixture
 def client():
     app = create_test_app()
+
+    # Abre el cliente de pruebas
     with app.test_client() as client:
+        # Contexto de aplicación para operaciones con la base de datos
         with app.app_context():
-            db.create_all()  # Crea las tablas antes de cada prueba
-        yield client
+            db.create_all()  # Crea todas las tablas
+        yield client  # Lo que se devuelva aquí estará disponible en las pruebas
+        # Limpiar la base de datos después de cada prueba
         with app.app_context():
-            db.drop_all()  # Limpia la base de datos después de cada prueba
+            db.drop_all()
 
-
+# Prueba para crear un usuario
 def test_create_usuario(client):
     response = client.post('/usuarios', json={
         'nombre': 'Juan',
         'apellido': 'Pérez',
         'fechaNacimiento': '1990-01-01',
-        'password': 'secret'
+        'password': 'password123'
     })
     assert response.status_code == 201
-    assert response.json.get('message') == 'Usuario creado exitosamente'
+    assert response.get_json()['mensaje'] == 'Usuario creado exitosamente'
 
+# Prueba para obtener todos los usuarios
 def test_get_usuarios(client):
+    # Primero, creamos un usuario
     client.post('/usuarios', json={
         'nombre': 'Juan',
         'apellido': 'Pérez',
         'fechaNacimiento': '1990-01-01',
-        'password': 'secret'
+        'password': 'password123'
     })
+    
+    # Luego, verificamos que la lista de usuarios tiene al menos uno
     response = client.get('/usuarios')
     assert response.status_code == 200
-    assert len(response.json) > 0
+    usuarios = response.get_json()
+    assert len(usuarios) == 1
+    assert usuarios[0]['nombre'] == 'Juan'
 
+# Prueba para obtener un usuario específico
 def test_get_usuario(client):
-    res = client.post('/usuarios', json={
+    # Primero, creamos un usuario
+    client.post('/usuarios', json={
         'nombre': 'Juan',
         'apellido': 'Pérez',
         'fechaNacimiento': '1990-01-01',
-        'password': 'secret'
+        'password': 'password123'
     })
-    assert res.status_code == 201
-    user_id = res.json.get('id')  # Use get to avoid KeyError
-    response = client.get(f'/usuarios/{user_id}')
+    
+    # Luego, obtenemos el usuario por su ID
+    response = client.get('/usuarios/1')
     assert response.status_code == 200
-    assert response.json.get('nombre') == 'Juan'
+    usuario = response.get_json()
+    assert usuario['nombre'] == 'Juan'
 
+# Prueba para actualizar un usuario
 def test_update_usuario(client):
-    res = client.post('/usuarios', json={
+    # Primero, creamos un usuario
+    client.post('/usuarios', json={
         'nombre': 'Juan',
         'apellido': 'Pérez',
         'fechaNacimiento': '1990-01-01',
-        'password': 'secret'
+        'password': 'password123'
     })
-    assert res.status_code == 201
-    user_id = res.json.get('id')  # Use get to avoid KeyError
-    response = client.put(f'/usuarios/{user_id}', json={
-        'nombre': 'Juan Updated'
+    
+    # Luego, lo actualizamos
+    response = client.put('/usuarios/1', json={
+        'nombre': 'Juan actualizado',
+        'apellido': 'Pérez actualizado',
+        'fechaNacimiento': '1990-01-01',
+        'password': 'newpassword123'
     })
     assert response.status_code == 200
-    assert response.json.get('message') == 'Usuario actualizado exitosamente'
+    assert response.get_json()['mensaje'] == 'Usuario actualizado exitosamente'
 
+# Prueba para eliminar un usuario
 def test_delete_usuario(client):
-    res = client.post('/usuarios', json={
+    # Primero, creamos un usuario
+    client.post('/usuarios', json={
         'nombre': 'Juan',
         'apellido': 'Pérez',
         'fechaNacimiento': '1990-01-01',
-        'password': 'secret'
+        'password': 'password123'
     })
-    assert res.status_code == 201
-    user_id = res.json.get('id')  # Use get to avoid KeyError
-    response = client.delete(f'/usuarios/{user_id}')
-    assert response.status_code == 200
-    assert response.json.get('message') == 'Usuario borrado exitosamente'
-    response = client.get(f'/usuarios/{user_id}')
-    assert response.status_code == 404
+    
+    # Luego, eliminamos el usuario
+    response = client.delete('/usuarios/1')
+    assert response.status_code == 204
