@@ -53,9 +53,9 @@ jobs:
               cd /home/ubuntu/Parcial/Backend &&
               pip install -r requirements.txt &&
               ls &&
-              fuser -k 5000/tcp
+              fuser -k 5000/tcp || true &&
               pwd &&
-              nohup gunicorn -w 4 -b 0.0.0.0:5000 Servidor:create_app > gunicorn.log 2>&1 & disown &&
-
+              tmux kill-session -t mysession || true &&  # Terminar sesión existente si existe
+              tmux new-session -d -s mysession "gunicorn -w 4 -b 0.0.0.0:5000 Servidor:create_app > gunicorn.log 2>&1" &&
               ls
           '
