@@ -17,7 +17,7 @@ def create_app():
     app = Flask(__name__)
     
     # Configuraciones para base de datos
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:password@localhost/trabajo'  # Cambia según tu configuración
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@172.31.80.194:3306/trabajo'  # Cambia según tu configuración
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Inicializa la base de datos con la aplicación
