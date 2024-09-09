@@ -56,5 +56,5 @@ jobs:
 
               pwd &&
               nohup gunicorn -w 4 -b 0.0.0.0:5000 Servidor:create_app > gunicorn.log 2>&1 &
-              pwd
+              ls
           '
