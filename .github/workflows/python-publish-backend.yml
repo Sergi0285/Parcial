@@ -28,9 +28,10 @@ jobs:
           
       # Set PYTHONPATH and run unit tests
       - name: Run Unit Tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/Backend
         run: |
           cd Backend &&
-          export PYTHONPATH=$(pwd) &&
           pytest tests/test_usuario.py --disable-warnings
           
       # Despliegue del Backend si las pruebas unitarias pasan
