@@ -56,6 +56,6 @@ jobs:
               fuser -k 5000/tcp || true &&
               pwd &&
               tmux kill-session -t mysession || true &&  # Terminar sesión existente si existe
-              tmux new-session -d -s mysession "gunicorn -w 4 -b 0.0.0.0:5000 Servidor:create_app > gunicorn.log 2>&1" &&
+              tmux new-session -d -s mysession "python Servidor.py> gunicorn.log 2>&1" &&
               ls
           '
