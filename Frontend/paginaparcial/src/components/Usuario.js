@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getUsuarios, createUsuario, deleteUsuario } from '../services/api';
+import './App.css'; // Asegúrate de que el CSS esté importado
 
 const Usuario = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -36,11 +37,11 @@ const Usuario = () => {
   };
 
   return (
-    <div>
+    <div className="usuario-container">
       <h2>Usuarios</h2>
-      <ul>
+      <ul className="usuario-list">
         {usuarios.map(usuario => (
-          <li key={usuario.id}>
+          <li key={usuario.id} className="usuario-list-item">
             {usuario.nombre} {usuario.apellido} - {usuario.fechaNacimiento}
             <button onClick={() => handleDelete(usuario.id)}>Eliminar</button>
           </li>

@@ -6,7 +6,7 @@ on:
     
 jobs:
   Deploy:
-    name: Test and Deploy to EC2 Backend
+    name: Deploy Frontend to EC2 Backend
     runs-on: ubuntu-latest
     
     steps:
