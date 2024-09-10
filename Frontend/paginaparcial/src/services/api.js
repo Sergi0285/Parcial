@@ -1,4 +1,4 @@
-const API_URL = 'http://ec2-54-237-95-32.compute-1.amazonaws.com:5000';
+const API_URL = 'http://ec2-54-89-111-85.compute-1.amazonaws.com:5000';
 
 export const getUsuarios = async () => {
   const response = await fetch(`${API_URL}/usuarios`);
