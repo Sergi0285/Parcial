@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getUsuarios, createUsuario, deleteUsuario } from '../services/api';
+import { getUsuarios, createUsuario } from '../services/api';
 import '../App.css'; // Ruta actualizada para reflejar la ubicación correcta
 
 const Usuario = () => {
@@ -31,29 +31,56 @@ const Usuario = () => {
     cargarUsuarios();
   };
 
-  const handleDelete = async (id) => {
-    await deleteUsuario(id);
-    cargarUsuarios();
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
     <div className="usuario-container">
-      <h2>Usuarios</h2>
-      <ul className="usuario-list">
-        {usuarios.map(usuario => (
-          <li key={usuario.id} className="usuario-list-item">
-            {usuario.nombre} {usuario.apellido} - {usuario.fechaNacimiento}
-            <button onClick={() => handleDelete(usuario.id)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      <h2 className="titulo-centrado">Usuarios</h2>
+      <table className="usuario-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Contraseña</th>
+          </tr>
+        </thead>
+        <tbody>
+          {usuarios.map(usuario => (
+            <tr key={usuario.id}>
+              <td>{usuario.nombre}</td>
+              <td>{usuario.apellido}</td>
+              <td>{formatDate(usuario.fechaNacimiento)}</td>
+              <td>{usuario.password}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <h3>Crear Usuario</h3>
+      <h3 className="titulo-centrado">Crear Usuario</h3>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleInputChange} />
-        <input type="text" name="apellido" placeholder="Apellido" value={formData.apellido} onChange={handleInputChange} />
-        <input type="date" name="fechaNacimiento" placeholder="Fecha Nacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} />
-        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleInputChange} />
+        <label>
+          Nombre:
+          <input type="text" name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleInputChange} />
+        </label>
+        <label>
+          Apellido:
+          <input type="text" name="apellido" placeholder="Apellido" value={formData.apellido} onChange={handleInputChange} />
+        </label>
+        <label>
+          Fecha de Nacimiento:
+          <input type="date" name="fechaNacimiento" placeholder="Fecha Nacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} />
+        </label>
+        <label>
+          Contraseña:
+          <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleInputChange} />
+        </label>
         <button type="submit">Crear</button>
       </form>
     </div>
