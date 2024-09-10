@@ -80,7 +80,8 @@ def create_app():
             'id': u.id,
             'nombre': u.nombre,
             'apellido': u.apellido,
-            'fechaNacimiento': u.fechaNacimiento
+            'fechaNacimiento': u.fechaNacimiento,
+            'password' : u.password
         } for u in usuarios])
 
     # Ruta para obtener un usuario específico por su ID
@@ -190,7 +191,8 @@ def create_test_app():
             'id': u.id,
             'nombre': u.nombre,
             'apellido': u.apellido,
-            'fechaNacimiento': u.fechaNacimiento
+            'fechaNacimiento': u.fechaNacimiento,
+            'password': u.password
         } for u in usuarios])
 
     @app.route('/usuarios/<int:id>', methods=['GET'])
