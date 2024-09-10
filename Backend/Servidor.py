@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS  # Importa CORS
 
 # Inicializa la instancia de SQLAlchemy, pero sin conectarla aún a la app
 db = SQLAlchemy()
@@ -22,6 +23,9 @@ def create_app():
     
     # Inicializa la base de datos con la aplicación
     db.init_app(app)
+
+    # Configura CORS para permitir solicitudes desde cualquier origen
+    CORS(app)
 
     # Rutas CRUD para la entidad usuario
     @app.route('/usuarios', methods=['POST'])
@@ -91,6 +95,9 @@ def create_test_app():
     with app.app_context():
         db.create_all()  # Crea todas las tablas necesarias para las pruebas
     
+    # Configura CORS para permitir solicitudes desde cualquier origen
+    CORS(app)
+    
     # Define las rutas necesarias para las pruebas
     @app.route('/usuarios', methods=['POST'])
     def create_usuario():
@@ -144,7 +151,6 @@ def create_test_app():
         return '', 204
     
     return app
-
 
 if __name__ == '__main__':
     app = create_app()
