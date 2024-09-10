@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getUsuarios, createUsuario, deleteUsuario } from '../services/api';
-import './App.css'; // Asegúrate de que el CSS esté importado
+import '../App.css'; // Ruta actualizada para reflejar la ubicación correcta
 
 const Usuario = () => {
   const [usuarios, setUsuarios] = useState([]);
