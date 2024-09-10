@@ -1,16 +1,33 @@
 /* App.css */
 
+.app-container {
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  background: #f0f2f5; /* Color de fondo suave */
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333; /* Color de texto oscuro */
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para el título */
+}
+
 .usuario-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   border-radius: 8px;
-  background: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: #ffffff; /* Fondo blanco para el contenedor */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para el contenedor */
 }
 
 .titulo-centrado {
   text-align: center;
+  color: #4CAF50; /* Color verde para los títulos */
 }
 
 .usuario-table {
@@ -20,19 +37,24 @@
 }
 
 .usuario-table th, .usuario-table td {
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
 }
 
 .usuario-table th {
-  background-color: #f4f4f4;
+  background-color: #4CAF50; /* Color verde para los encabezados de la tabla */
+  color: white;
+}
+
+.usuario-table tr:nth-child(even) {
+  background-color: #f2f2f2; /* Color de fondo alternado en filas */
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   margin-top: 20px;
 }
 
@@ -42,20 +64,22 @@ form label {
 }
 
 form input {
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem;
 }
 
 form button {
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Color verde para el botón */
   color: white;
   border: none;
-  padding: 10px;
+  padding: 12px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
 }
 
 form button:hover {
-  background-color: #45a049;
+  background-color: #45a049; /* Color verde más oscuro para el botón al pasar el mouse */
 }
