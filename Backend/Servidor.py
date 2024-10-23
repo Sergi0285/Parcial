@@ -36,7 +36,7 @@ def create_app():
         Retorna:
             Response: Respuesta JSON con la lista de tiendas.
         """
-        stores = Store.query.all()
+        stores = store.query.all()
         return jsonify([{
             'store_id': s.store_id,
             'manager_staff_id': s.manager_staff_id,
