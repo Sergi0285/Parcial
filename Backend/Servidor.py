@@ -37,7 +37,7 @@ def create_app():
     app = Flask(__name__)
     
     # Configuraciones para la base de datos
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@172.31.80.194:3306/trabajo'  # Cambiar según configuración real
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:contrasena12345#.@database-1.clw6drnudw9y.us-east-1.rds.amazonaws.com/sakila'  # Cambiar según configuración real
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Inicializa la base de datos con la aplicación
@@ -169,60 +169,31 @@ def create_test_app():
     
     # Configura CORS
     CORS(app)
-    
-    # Rutas CRUD (similares a las anteriores)
-    @app.route('/usuarios', methods=['POST'])
-    def create_usuario():
-        data = request.get_json()
-        nuevo_usuario = Usuario(
-            nombre=data['nombre'],
-            apellido=data['apellido'],
-            fechaNacimiento=data['fechaNacimiento'],
-            password=data['password']
-        )
-        db.session.add(nuevo_usuario)
-        db.session.commit()
-        return jsonify({"mensaje": "Usuario creado exitosamente"}), 201
 
-    @app.route('/usuarios', methods=['GET'])
-    def get_usuarios():
-        usuarios = Usuario.query.all()
+    @app.route('/films', methods=['GET'])
+    def get_films():
+        """
+        Obtiene una lista de todos los filmes almacenados en la base de datos.
+    
+        Retorna:
+            Response: Respuesta JSON con la lista de filmes.
+        """
+        films = Film.query.all()
         return jsonify([{
-            'id': u.id,
-            'nombre': u.nombre,
-            'apellido': u.apellido,
-            'fechaNacimiento': u.fechaNacimiento,
-            'password': u.password
-        } for u in usuarios])
-
-    @app.route('/usuarios/<int:id>', methods=['GET'])
-    def get_usuario(id):
-        usuario = Usuario.query.get_or_404(id)
-        return jsonify({
-            'id': usuario.id,
-            'nombre': usuario.nombre,
-            'apellido': usuario.apellido,
-            'fechaNacimiento': usuario.fechaNacimiento
-        })
-
-    @app.route('/usuarios/<int:id>', methods=['PUT'])
-    def update_usuario(id):
-        data = request.get_json()
-        usuario = Usuario.query.get_or_404(id)
-        usuario.nombre = data.get('nombre', usuario.nombre)
-        usuario.apellido = data.get('apellido', usuario.apellido)
-        usuario.fechaNacimiento = data.get('fechaNacimiento', usuario.fechaNacimiento)
-        usuario.password = data.get('password', usuario.password)
-        db.session.commit()
-        return jsonify({"mensaje": "Usuario actualizado exitosamente"})
-
-    @app.route('/usuarios/<int:id>', methods=['DELETE'])
-    def delete_usuario(id):
-        usuario = Usuario.query.get_or_404(id)
-        db.session.delete(usuario)
-        db.session.commit()
-        return '', 204
-    
+            'film_id': f.film_id,
+            'title': f.title,
+            'description': f.description,
+            'release_year': f.release_year,
+            'language_id': f.language_id,
+            'rental_duration': f.rental_duration,
+            'rental_rate': str(f.rental_rate),  # Convertir a string para JSON
+            'length': f.length,
+            'replacement_cost': str(f.replacement_cost),  # Convertir a string para JSON
+            'rating': f.rating,
+            'last_update': f.last_update.isoformat() if f.last_update else None,
+            'special_features': f.special_features
+        } for f in films])
+        
     return app
 
 if __name__ == '__main__':
