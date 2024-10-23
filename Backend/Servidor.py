@@ -116,32 +116,32 @@ def create_app():
             return jsonify({"error": "Error al registrar el pago: " + error}), 500
 
     @app.route('/recent_rentals', methods=['GET'])
-def get_recent_rentals():
-    """
-    Obtiene las últimas 20 rentas junto con sus respectivos pagos.
-    """
-    try:
-        # Consulta para obtener las últimas 20 rentas y sus pagos
-        recent_rentals = db.session.query(Rental, Payment).join(
-            Payment, Rental.rental_id == Payment.rental_id
-        ).order_by(Rental.rental_date.desc()).limit(20).all()
-
-        # Formatear la respuesta
-        response = [{
-            'rental_id': rental.rental_id,
-            'inventory_id': rental.inventory_id,
-            'customer_id': rental.customer_id,
-            'staff_id': rental.staff_id,
-            'rental_date': rental.rental_date.isoformat() if rental.rental_date else None,
-            'payment_id': payment.payment_id,
-            'amount': payment.amount,
-            'payment_date': payment.payment_date.isoformat() if payment.payment_date else None
-        } for rental, payment in recent_rentals]
-
-        return jsonify(response), 200
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        return jsonify({"error": "Error al obtener las rentas: " + error}), 500
+    def get_recent_rentals():
+        """
+        Obtiene las últimas 20 rentas junto con sus respectivos pagos.
+        """
+        try:
+            # Consulta para obtener las últimas 20 rentas y sus pagos
+            recent_rentals = db.session.query(Rental, Payment).join(
+                Payment, Rental.rental_id == Payment.rental_id
+            ).order_by(Rental.rental_date.desc()).limit(20).all()
+    
+            # Formatear la respuesta
+            response = [{
+                'rental_id': rental.rental_id,
+                'inventory_id': rental.inventory_id,
+                'customer_id': rental.customer_id,
+                'staff_id': rental.staff_id,
+                'rental_date': rental.rental_date.isoformat() if rental.rental_date else None,
+                'payment_id': payment.payment_id,
+                'amount': payment.amount,
+                'payment_date': payment.payment_date.isoformat() if payment.payment_date else None
+            } for rental, payment in recent_rentals]
+    
+            return jsonify(response), 200
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            return jsonify({"error": "Error al obtener las rentas: " + error}), 500
 
 
     @app.route('/health', methods=['GET'])
