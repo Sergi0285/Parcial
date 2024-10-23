@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Checkout the code from the Backend branch
+      # Checkout the code from the Backend branche
       - name: Checkout code
         uses: actions/checkout@v2
 
