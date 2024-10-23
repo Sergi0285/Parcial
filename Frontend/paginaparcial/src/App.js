@@ -1,14 +1,17 @@
 import React from 'react';
-import Usuario from './components/Usuario';
-import './App.css'; // Asegúrate de importar el CSS
+import RentMovie from './components/RentMovie';
+import Payment from './components/Payment';
+import RecentRentals from './components/RecentRentals';
 
 function App() {
-  return (
-    <div className="app-container">
-      <h1 className="app-title">Aplicación de Usuarios</h1>
-      <Usuario />
-    </div>
-  );
+    return (
+        <div className="App">
+            <h1>Rental App</h1>
+            <RentMovie />
+            <Payment />
+            <RecentRentals />
+        </div>
+    );
 }
 
 export default App;
