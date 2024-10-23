@@ -28,29 +28,21 @@ def create_app():
     # Configura CORS para permitir solicitudes desde cualquier origen
     CORS(app)
 
-    @app.route('/films', methods=['GET'])
-    def get_films():
+    @app.route('/stores', methods=['GET'])
+    def get_stores():
         """
-        Obtiene una lista de todos los filmes almacenados en la base de datos.
+        Obtiene una lista de todas las tiendas almacenadas en la base de datos.
     
         Retorna:
-            Response: Respuesta JSON con la lista de filmes.
+            Response: Respuesta JSON con la lista de tiendas.
         """
-        films = Film.query.all()
+        stores = Store.query.all()
         return jsonify([{
-            'film_id': f.film_id,
-            'title': f.title,
-            'description': f.description,
-            'release_year': f.release_year,
-            'language_id': f.language_id,
-            'rental_duration': f.rental_duration,
-            'rental_rate': str(f.rental_rate),  # Convertir a string para JSON
-            'length': f.length,
-            'replacement_cost': str(f.replacement_cost),  # Convertir a string para JSON
-            'rating': f.rating,
-            'last_update': f.last_update.isoformat() if f.last_update else None,
-            'special_features': f.special_features
-        } for f in films])
+            'store_id': s.store_id,
+            'manager_staff_id': s.manager_staff_id,
+            'address_id': s.address_id,
+            'last_update': s.last_update.isoformat() if s.last_update else None
+        } for s in stores])
         
     return app
 
