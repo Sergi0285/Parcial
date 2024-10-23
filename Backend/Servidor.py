@@ -124,7 +124,7 @@ def create_app():
             # Consulta para obtener las últimas 20 rentas y sus pagos
             recent_rentals = db.session.query(Rental, Payment).join(
                 Payment, Rental.rental_id == Payment.rental_id
-            ).order_by(Rental.rental_date.desc()).limit(20).all()
+            ).order_by(Rental.rental_date.asc()).limit(20).all()
     
             # Formatear la respuesta
             response = [{
