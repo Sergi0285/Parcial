@@ -1,8 +1,9 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime
 
 # Inicializa la instancia de SQLAlchemy
 db = SQLAlchemy()
@@ -21,7 +22,11 @@ def create_app():
     with app.app_context():
         Base = automap_base()
         Base.prepare(db.engine, reflect=True)
-        Store = Base.classes.store  # Obtiene la clase Store de la base de datos reflejada
+        Store = Base.classes.store
+        Rental = Base.classes.rental
+        Payment = Base.classes.payment
+        Inventory = Base.classes.inventory
+        Customer = Base.classes.customer
 
     # Configura CORS
     CORS(app)
@@ -32,9 +37,6 @@ def create_app():
 
     @app.route('/stores', methods=['GET'])
     def get_stores():
-        """
-        Obtiene una lista de todas las tiendas almacenadas en la base de datos.
-        """
         try:
             stores = db.session.query(Store).all()
             return jsonify([{
@@ -47,11 +49,74 @@ def create_app():
             error = str(e.__dict__['orig'])
             return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
 
+    @app.route('/rent', methods=['POST'])
+    def rent_movie():
+        """
+        Crea un nuevo registro de renta en la base de datos.
+        """
+        data = request.json
+        try:
+            # Extrae los datos del request
+            inventory_id = data.get('inventory_id')
+            customer_id = data.get('customer_id')
+            staff_id = data.get('staff_id')
+            rental_date = datetime.utcnow()
+
+            # Crea un nuevo registro de renta
+            new_rental = Rental(
+                inventory_id=inventory_id,
+                customer_id=customer_id,
+                staff_id=staff_id,
+                rental_date=rental_date,
+                last_update=rental_date
+            )
+
+            # Guarda el nuevo registro en la base de datos
+            db.session.add(new_rental)
+            db.session.commit()
+
+            return jsonify({"message": "Renta creada exitosamente!", "rental_id": new_rental.rental_id}), 201
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            error = str(e.__dict__['orig'])
+            return jsonify({"error": "Error al crear la renta: " + error}), 500
+
+    @app.route('/pay', methods=['POST'])
+    def make_payment():
+        """
+        Crea un nuevo registro de pago en la base de datos.
+        """
+        data = request.json
+        try:
+            # Extrae los datos del request
+            rental_id = data.get('rental_id')
+            customer_id = data.get('customer_id')
+            staff_id = data.get('staff_id')
+            amount = data.get('amount')
+            payment_date = datetime.utcnow()
+
+            # Crea un nuevo registro de pago
+            new_payment = Payment(
+                customer_id=customer_id,
+                staff_id=staff_id,
+                rental_id=rental_id,
+                amount=amount,
+                payment_date=payment_date,
+                last_update=payment_date
+            )
+
+            # Guarda el nuevo registro en la base de datos
+            db.session.add(new_payment)
+            db.session.commit()
+
+            return jsonify({"message": "Pago registrado exitosamente!", "payment_id": new_payment.payment_id}), 201
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            error = str(e.__dict__['orig'])
+            return jsonify({"error": "Error al registrar el pago: " + error}), 500
+
     @app.route('/health', methods=['GET'])
     def health_check():
-        """
-        Comprueba si la conexión a la base de datos es exitosa.
-        """
         try:
             db.session.execute('SELECT 1')
             return jsonify({"message": "Conexión a la base de datos exitosa!"}), 200
