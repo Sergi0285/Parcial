@@ -24,8 +24,13 @@ def create_app():
     
     # Inicializa la base de datos con la aplicación
     db.init_app(app)
+# Refleja la base de datos existente
+    with app.app_context():
+        Base = automap_base()
+        Base.prepare(db.engine, reflect=True)
+        Store = Base.classes.store  # Obtiene la clase Store de la base de datos reflejada
 
-    # Configura CORS para permitir solicitudes desde cualquier origen
+    # Configura CORS
     CORS(app)
 
     @app.route('/stores', methods=['GET'])
@@ -36,7 +41,7 @@ def create_app():
         Retorna:
             Response: Respuesta JSON con la lista de tiendas.
         """
-        stores = store.query.all()
+        stores = db.session.query(Store).all()
         return jsonify([{
             'store_id': s.store_id,
             'manager_staff_id': s.manager_staff_id,
