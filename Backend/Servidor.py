@@ -29,11 +29,7 @@ def create_app():
         Customer = Base.classes.customer
 
     # Configura CORS
-    CORS(app)
-
-    @app.route('/')
-    def index():
-        return render_template('index.html')
+    CORS(app, resources={r"/*": {"origins": "*"}})  # Asegúrate de permitir todos los orígenes o el específico
 
     @app.route('/stores', methods=['GET'])
     def get_stores():
