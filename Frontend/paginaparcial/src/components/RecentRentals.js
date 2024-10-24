@@ -13,7 +13,12 @@ function RecentRentals() {
             const response = await getRecentRentals();
             setRentals(response.data);
         } catch (error) {
-            alert('Error al obtener las rentas: ' + error.response.data.error);
+            // Verifica si hay un error de respuesta y maneja adecuadamente
+            if (error.response) {
+                alert('Error al obtener las rentas: ' + error.response.data.error);
+            } else {
+                alert('Error al obtener las rentas: ' + error.message);
+            }
         }
     };
 
