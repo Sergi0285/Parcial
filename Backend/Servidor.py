@@ -29,7 +29,7 @@ def create_app():
         Customer = Base.classes.customer
 
     # Configura CORS
-    CORS(app, supports_credentials=True)
+    CORS(app, resources={r"/recent_rentals": {"origins": "http://ec2-52-90-109-166.compute-1.amazonaws.com"}})
 
     @app.route('/')
     def index():
