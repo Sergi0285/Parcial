@@ -11,14 +11,9 @@ function RecentRentals() {
     const fetchRecentRentals = async () => {
         try {
             const response = await getRecentRentals();
-            setRentals(response.data);
+            setRentals(response);
         } catch (error) {
-            // Verifica si hay un error de respuesta y maneja adecuadamente
-            if (error.response) {
-                alert('Error al obtener las rentas: ' + error.response.data.error);
-            } else {
-                alert('Error al obtener las rentas: ' + error.message);
-            }
+            alert('Error al obtener las rentas: ' + error.message);
         }
     };
 
