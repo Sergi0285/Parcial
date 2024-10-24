@@ -29,7 +29,7 @@ def create_app():
         Customer = Base.classes.customer
 
     # Configura CORS
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     @app.route('/')
     def index():
