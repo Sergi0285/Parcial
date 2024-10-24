@@ -49,7 +49,7 @@ def create_app():
             error = str(e.__dict__['orig'])
             return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
 
-    @app.route('/rent', methods=['POST'])
+    @app.route('/rent', methods=['OPTIONS', 'GET'])
     def rent_movie():
         """
         Crea un nuevo registro de renta en la base de datos.
