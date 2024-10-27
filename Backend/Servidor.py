@@ -160,39 +160,29 @@ def create_app():
     @app.route('/recent_rentals', methods=['GET'])
     def get_recent_rentals():
         """
-        Obtiene las últimas 20 rentas junto con sus respectivos pagos y detalles adicionales.
+        Obtiene las últimas 20 rentas con detalles específicos.
         """
         try:
             # Consulta para obtener las últimas 20 rentas con detalles
             recent_rentals = db.session.query(
-                Rental,
-                Payment,
+                Rental.rental_id,
                 Customer.first_name.label('customer_first_name'),
                 Customer.last_name.label('customer_last_name'),
                 Film.title.label('film_title'),
-                Store.store_id,
-                Staff.first_name.label('staff_first_name'),
-                Staff.last_name.label('staff_last_name'),
                 Payment.amount
             ).join(Payment, Rental.rental_id == Payment.rental_id) \
             .join(Customer, Rental.customer_id == Customer.customer_id) \
             .join(Inventory, Rental.inventory_id == Inventory.inventory_id) \
             .join(Film, Inventory.film_id == Film.film_id) \
-            .join(Staff, Rental.staff_id == Staff.staff_id) \
-            .join(Store, Staff.store_id == Store.store_id) \
             .order_by(Rental.rental_date.asc()).limit(20).all()
 
             # Formatear la respuesta
             response = [{
-                'rental_id': rental.rental_id,
-                'customer_full_name': f"{rental.customer_first_name} {rental.customer_last_name}",
-                'film_title': rental.film_title,
-                'store_id': rental.store_id,
-                'staff_full_name': f"{rental.staff_first_name} {rental.staff_last_name}",
-                'amount': payment.amount,
-                'rental_date': rental.rental_date.isoformat() if rental.rental_date else None,
-                'payment_date': payment.payment_date.isoformat() if payment.payment_date else None
-            } for rental, payment in recent_rentals]
+                'rental_id': rental_id,
+                'customer_full_name': f"{customer_first_name} {customer_last_name}",
+                'film_title': film_title,
+                'amount': amount
+            } for rental_id, customer_first_name, customer_last_name, film_title, amount in recent_rentals]
 
             return jsonify(response), 200
         except SQLAlchemyError as e:
