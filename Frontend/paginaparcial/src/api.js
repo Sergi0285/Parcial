@@ -51,3 +51,23 @@ export const getRecentRentals = async () => {
 
     return await response.json();
 };
+
+export const fetchStores = async () => {
+    const response = await axios.get(`${API_URL}/stores`);
+    return response.data;
+};
+
+export const fetchCustomers = async (storeId) => {
+    const response = await axios.get(`${API_URL}/customers/${storeId}`);
+    return response.data;
+};
+
+export const fetchStaff = async (storeId) => {
+    const response = await axios.get(`${API_URL}/staff/${storeId}`);
+    return response.data;
+};
+
+export const fetchInventory = async (storeId) => {
+    const response = await axios.get(`${API_URL}/inventory/${storeId}`);
+    return response.data;
+};
