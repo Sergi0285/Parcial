@@ -4,8 +4,10 @@ import {
     fetchStores,
     fetchCustomers,
     fetchStaff,
-    fetchInventory
-} from '../api';
+    fetchInventory,
+    rentMovie,
+    makePayment
+} from './api';
 
 const Datos = () => {
     const [stores, setStores] = useState([]);
@@ -22,6 +24,7 @@ const Datos = () => {
     const [staffId, setStaffId] = useState(null);
     const [inventoryId, setInventoryId] = useState(null);
     const [inventoryPrice, setInventoryPrice] = useState(0);
+    const [rentalId, setRentalId] = useState(null);
 
     useEffect(() => {
         const loadStores = async () => {
@@ -75,6 +78,37 @@ const Datos = () => {
         setInventoryPrice(selected.replacement_cost);
     };
 
+    const handleRentMovie = async () => {
+        if (!inventoryId || !customerId || !staffId) {
+            alert("Por favor, selecciona todos los campos antes de continuar.");
+            return;
+        }
+
+        try {
+            const rentalResponse = await rentMovie({
+                inventory_id: inventoryId,
+                customer_id: customerId,
+                staff_id: staffId
+            });
+
+            setRentalId(rentalResponse.rental_id);
+            alert(`Renta creada exitosamente! ID de Renta: ${rentalResponse.rental_id}`);
+
+            // Realizar el pago
+            const paymentResponse = await makePayment({
+                rental_id: rentalResponse.rental_id,
+                customer_id: customerId,
+                staff_id: staffId,
+                amount: inventoryPrice
+            });
+
+            alert(`Pago registrado exitosamente! ID de Pago: ${paymentResponse.payment_id}`);
+        } catch (error) {
+            console.error("Error durante la renta o el pago:", error);
+            alert("Hubo un error al procesar la renta o el pago.");
+        }
+    };
+
     return (
         <div>
             <h1>Renta de Películas</h1>
@@ -122,12 +156,14 @@ const Datos = () => {
                     ))}
                 </select>
             </div>
+            <button onClick={handleRentMovie}>Crear Renta y Pago</button>
             <div>
                 <h3>Resumen:</h3>
                 <p>Cliente ID: {customerId}</p>
                 <p>Personal ID: {staffId}</p>
                 <p>Inventario ID: {inventoryId}</p>
                 <p>Precio: ${inventoryPrice}</p>
+                <p>ID de Renta: {rentalId}</p>
             </div>
         </div>
     );
