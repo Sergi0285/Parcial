@@ -7,7 +7,7 @@ import {
     fetchInventory,
     rentMovie,
     makePayment
-} from './api';
+} from '../api';
 
 const Datos = () => {
     const [stores, setStores] = useState([]);
