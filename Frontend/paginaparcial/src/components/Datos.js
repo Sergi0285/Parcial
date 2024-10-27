@@ -5,7 +5,7 @@ import {
     fetchCustomers,
     fetchStaff,
     fetchInventory
-} from './api';
+} from '../api';
 
 const Datos = () => {
     const [stores, setStores] = useState([]);
