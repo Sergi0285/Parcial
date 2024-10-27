@@ -174,7 +174,7 @@ def create_app():
             .join(Customer, Rental.customer_id == Customer.customer_id) \
             .join(Inventory, Rental.inventory_id == Inventory.inventory_id) \
             .join(Film, Inventory.film_id == Film.film_id) \
-            .order_by(Rental.rental_date.asc()).limit(20).all()
+            .order_by(Rental.rental_date.desc()).limit(20).all()
 
             # Formatear la respuesta
             response = [{
