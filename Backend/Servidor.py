@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.exc import SQLAlchemyError
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 # Inicializa la instancia de SQLAlchemy
 db = SQLAlchemy()
@@ -89,11 +90,9 @@ def create_app():
             error = str(e.__dict__['orig'])
             return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
         
-    @app.route('/rent', methods=['OPTIONS', 'GET'])
+    @app.route('/rent', methods=['OPTIONS', 'POST'])  # Cambiar a POST ya que estás creando un nuevo registro
     def rent_movie():
-        """
-        Crea un nuevo registro de renta en la base de datos.
-        """
+        
         data = request.json
         try:
             # Extrae los datos del request
@@ -101,6 +100,8 @@ def create_app():
             customer_id = data.get('customer_id')
             staff_id = data.get('staff_id')
             rental_date = datetime.utcnow()
+            # Calcula la fecha de devolución (una semana después de la fecha actual)
+            return_date = rental_date + timedelta(weeks=1)
 
             # Crea un nuevo registro de renta
             new_rental = Rental(
@@ -108,6 +109,7 @@ def create_app():
                 customer_id=customer_id,
                 staff_id=staff_id,
                 rental_date=rental_date,
+                return_date=return_date,  # Asegúrate de que este campo exista en tu modelo Rental
                 last_update=rental_date
             )
 
@@ -115,7 +117,7 @@ def create_app():
             db.session.add(new_rental)
             db.session.commit()
 
-            return jsonify({"message": "Renta creada exitosamente!", "rental_id": new_rental.rental_id}), 201
+            return jsonify({"message": "Renta creada exitosamente!", "rental_id": new_rental.rental_id, "return_date": return_date.isoformat()}), 201
         except SQLAlchemyError as e:
             db.session.rollback()
             error = str(e.__dict__['orig'])
@@ -158,26 +160,40 @@ def create_app():
     @app.route('/recent_rentals', methods=['GET'])
     def get_recent_rentals():
         """
-        Obtiene las últimas 20 rentas junto con sus respectivos pagos.
+        Obtiene las últimas 20 rentas junto con sus respectivos pagos y detalles adicionales.
         """
         try:
-            # Consulta para obtener las últimas 20 rentas y sus pagos
-            recent_rentals = db.session.query(Rental, Payment).join(
-                Payment, Rental.rental_id == Payment.rental_id
-            ).order_by(Rental.rental_date.asc()).limit(20).all()
-    
+            # Consulta para obtener las últimas 20 rentas con detalles
+            recent_rentals = db.session.query(
+                Rental,
+                Payment,
+                Customer.first_name.label('customer_first_name'),
+                Customer.last_name.label('customer_last_name'),
+                Film.title.label('film_title'),
+                Store.store_id,
+                Staff.first_name.label('staff_first_name'),
+                Staff.last_name.label('staff_last_name'),
+                Payment.amount
+            ).join(Payment, Rental.rental_id == Payment.rental_id) \
+            .join(Customer, Rental.customer_id == Customer.customer_id) \
+            .join(Inventory, Rental.inventory_id == Inventory.inventory_id) \
+            .join(Film, Inventory.film_id == Film.film_id) \
+            .join(Staff, Rental.staff_id == Staff.staff_id) \
+            .join(Store, Staff.store_id == Store.store_id) \
+            .order_by(Rental.rental_date.asc()).limit(20).all()
+
             # Formatear la respuesta
             response = [{
                 'rental_id': rental.rental_id,
-                'inventory_id': rental.inventory_id,
-                'customer_id': rental.customer_id,
-                'staff_id': rental.staff_id,
+                'customer_full_name': f"{rental.customer_first_name} {rental.customer_last_name}",
+                'film_title': rental.film_title,
+                'store_id': rental.store_id,
+                'staff_full_name': f"{rental.staff_first_name} {rental.staff_last_name}",
+                'amount': rental.amount,
                 'rental_date': rental.rental_date.isoformat() if rental.rental_date else None,
-                'payment_id': payment.payment_id,
-                'amount': payment.amount,
                 'payment_date': payment.payment_date.isoformat() if payment.payment_date else None
             } for rental, payment in recent_rentals]
-    
+
             return jsonify(response), 200
         except SQLAlchemyError as e:
             error = str(e.__dict__['orig'])
