@@ -20,13 +20,30 @@ function RecentRentals() {
     return (
         <div>
             <h2>Últimas 20 Películas Rentadas</h2>
-            <ul>
-                {rentals.map((rental) => (
-                    <li key={rental.rental_id}>
-                        Rental ID: {rental.rental_id}, Customer ID: {rental.customer_id}, Amount: ${rental.amount}, Payment Date: {rental.payment_date}
-                    </li>
-                ))}
-            </ul>
+            {rentals.length === 0 ? (
+                <p>No hay rentas recientes disponibles.</p>
+            ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rental ID</th>
+                            <th>Nombre del Cliente</th>
+                            <th>Título de la Película</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rentals.map((rental) => (
+                            <tr key={rental.rental_id}>
+                                <td>{rental.rental_id}</td>
+                                <td>{rental.customer_full_name}</td>
+                                <td>{rental.film_title}</td>
+                                <td>${rental.amount}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }
