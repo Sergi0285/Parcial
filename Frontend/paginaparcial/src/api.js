@@ -38,7 +38,6 @@ export const makePayment = async (data) => {
 
 export const getRecentRentals = async () => {
     const response = await fetch(`${API_URL}/recent_rentals`, {
-        mode: 'no-cors',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
