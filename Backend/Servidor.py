@@ -27,24 +27,68 @@ def create_app():
         Payment = Base.classes.payment
         Inventory = Base.classes.inventory
         Customer = Base.classes.customer
+        Staff = Base.classes.staff
+        Film = Base.classes.film
 
     # Configura CORS
-    CORS(app)  # Asegúrate de permitir todos los orígenes o el específico
+    CORS(app)
 
     @app.route('/stores', methods=['GET'])
     def get_stores():
         try:
-            stores = db.session.query(Store).all()
+            stores = db.session.query(Store.store_id).all()
             return jsonify([{
-                'store_id': s.store_id,
-                'manager_staff_id': s.manager_staff_id,
-                'address_id': s.address_id,
-                'last_update': s.last_update.isoformat() if s.last_update else None
+                'store_id': s[0]
             } for s in stores])
         except SQLAlchemyError as e:
             error = str(e.__dict__['orig'])
             return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
 
+    @app.route('/customers/<int:store_id>', methods=['GET'])
+    def get_customers_by_store(store_id):
+        try:
+            customers = db.session.query(Customer.customer_id, Customer.first_name, Customer.last_name).filter(Customer.store_id == store_id).all()
+            return jsonify([{
+                'customer_id': c[0],
+                'first_name': c[1],
+                'last_name': c[2]
+            } for c in customers])
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
+
+    @app.route('/staff/<int:store_id>', methods=['GET'])
+    def get_staff_by_store(store_id):
+        try:
+            staff = db.session.query(Staff.staff_id, Staff.first_name, Staff.last_name).filter(Staff.store_id == store_id).all()
+            return jsonify([{
+                'staff_id': s[0],
+                'first_name': s[1],
+                'last_name': s[2]
+            } for s in staff])
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
+
+    @app.route('/inventory/<int:store_id>', methods=['GET'])
+    def get_inventory_by_store(store_id):
+        try:
+            # Consulta que une las tablas Inventory y Film
+            inventory = db.session.query(Inventory.inventory_id, Inventory.film_id, Film.title, Film.replacement_cost).join(Film, Inventory.film_id == Film.film_id)  # Realiza la unión con la tabla Film
+            
+            # Filtra por el store_id
+            inventory = inventory.filter(Inventory.store_id == store_id).all()
+
+            return jsonify([{
+                'inventory_id': i[0],
+                'film_id': i[1],
+                'film_title': i[2],
+                'replacement_cost': i[3]
+            } for i in inventory])
+        except SQLAlchemyError as e:
+            error = str(e.__dict__['orig'])
+            return jsonify({"error": "Error al acceder a la base de datos: " + error}), 500
+        
     @app.route('/rent', methods=['OPTIONS', 'GET'])
     def rent_movie():
         """
@@ -138,16 +182,6 @@ def create_app():
         except SQLAlchemyError as e:
             error = str(e.__dict__['orig'])
             return jsonify({"error": "Error al obtener las rentas: " + error}), 500
-
-
-    @app.route('/health', methods=['GET'])
-    def health_check():
-        try:
-            db.session.execute('SELECT 1')
-            return jsonify({"message": "Conexión a la base de datos exitosa!"}), 200
-        except SQLAlchemyError as e:
-            error = str(e.__dict__['orig'])
-            return jsonify({"error": "Error al conectar a la base de datos: " + error}), 500
 
     return app
 
