@@ -189,7 +189,7 @@ def create_app():
                 'film_title': rental.film_title,
                 'store_id': rental.store_id,
                 'staff_full_name': f"{rental.staff_first_name} {rental.staff_last_name}",
-                'amount': rental.amount,
+                'amount': payment.amount,
                 'rental_date': rental.rental_date.isoformat() if rental.rental_date else None,
                 'payment_date': payment.payment_date.isoformat() if payment.payment_date else None
             } for rental, payment in recent_rentals]
