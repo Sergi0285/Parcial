@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://ec2-44-202-138-248.compute-1.amazonaws.com:5000';
+const API_URL = 'http://ec2-54-175-7-193.compute-1.amazonaws.com:5000';
 
 export const rentMovie = async (data) => {
     const response = await fetch(`${API_URL}/rent`, {
