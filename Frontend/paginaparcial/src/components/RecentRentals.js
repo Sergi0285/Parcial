@@ -46,6 +46,7 @@ function RecentRentals() {
             )}
         </div>
     );
+
 }
 
 export default RecentRentals;

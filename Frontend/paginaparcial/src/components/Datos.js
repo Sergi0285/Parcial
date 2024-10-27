@@ -123,41 +123,9 @@ const Datos = () => {
                     ))}
                 </select>
             </div>
-            <div>
-                <label>Cliente:</label>
-                <select value={selectedCustomer} onChange={handleCustomerChange}>
-                    <option value="">Selecciona un cliente</option>
-                    {customers.map(customer => (
-                        <option key={customer.customer_id} value={customer.customer_id}>
-                            {customer.first_name} {customer.last_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Personal:</label>
-                <select value={selectedStaff} onChange={handleStaffChange}>
-                    <option value="">Selecciona un personal</option>
-                    {staff.map(staffMember => (
-                        <option key={staffMember.staff_id} value={staffMember.staff_id}>
-                            {staffMember.first_name} {staffMember.last_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Inventario:</label>
-                <select value={selectedInventory} onChange={handleInventoryChange}>
-                    <option value="">Selecciona un título</option>
-                    {inventory.map(item => (
-                        <option key={item.inventory_id} value={item.inventory_id}>
-                            {item.film_title} - ${item.replacement_cost}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {/* Resto del código... */}
             <button onClick={handleRentMovie}>Crear Renta y Pago</button>
-            <div>
+            <div className="resumen">
                 <h3>Resumen:</h3>
                 <p>Cliente ID: {customerId}</p>
                 <p>Personal ID: {staffId}</p>
