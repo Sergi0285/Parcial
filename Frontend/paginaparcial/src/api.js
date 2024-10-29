@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://ec2-54-196-82-24.compute-1.amazonaws.com:5000';
+const API_URL = 'http://ec2-44-203-39-10.compute-1.amazonaws.com:5000';
 
 export const getRecentRentals = async () => {
     const response = await fetch(`${API_URL}/recent_rentals`, {
