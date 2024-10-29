@@ -12,7 +12,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
 
-    # Configuraciones para la base de datos
+    # Configuraciones para la base de datoss
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:contrasena12345#.@database-1.clw6drnudw9y.us-east-1.rds.amazonaws.com/sakila'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
